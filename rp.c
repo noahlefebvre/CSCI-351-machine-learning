@@ -29,16 +29,21 @@ THE SOFTWARE.
 /* printf, fopen, fclose, fscanf, scanf */
 #include <stdio.h>
 
-/* EXIT_SUCCESS, malloc, calloc, free */
+/* EXIT_SUCCESS, malloc, calloc, free, qsort */
 #include <stdlib.h>
+
+struct distance_metric {
+  size_t viewer_id;
+  double distance;
+};
 
 static int
 cmp(void const *ap, void const *bp)
 {
-  double const a = *(double*)ap;
-  double const b = *(double*)bp;
+  struct distance_metric const a = *(struct distance_metric*)ap;
+  struct distance_metric const b = *(struct distance_metric*)bp;
 
-  return a < b ? -1 : 1;
+  return a.distance < b.distance ? -1 : 1;
 }
 
 int
@@ -91,25 +96,27 @@ main(int argc, char * argv[])
   }
 
   /* Allocate more memory. */
-  double * const distance = calloc(n, sizeof(*distance));
+  struct distance_metric * const distance = calloc(n, sizeof(*distance));
 
   /* Check for success. */
   assert(distance);
 
   /* Compute distances. */
   for (size_t i = 0; i < n; i++) {
+    distance[i].viewer_id = i;
     for (size_t j = 0; j < m - 1; j++) {
-      distance[i] += fabs(urating[j] - rating[i * m + j]);
+      distance[i].distance += fabs(urating[j] - rating[i * m + j]);
     }
   }
 
   /* Sort distances. */
   qsort(distance, n, sizeof(*distance), cmp);
 
-  /* Output sorted distances. */
-  for (size_t i = 0; i < n; i++) {
-    printf("%.1lf\n", distance[i]);
-  }
+  /* Output minimum distance viewer and a prediction for movie 5. */
+  printf("The most similar viewer was viewer #%zu and the distance calculated "
+    "was %.1lf.\n", distance[0].viewer_id + 1, distance[0].distance);
+  printf("The predicated rating for movie 5 is %.1lf.\n",
+    rating[distance[0].viewer_id * m + 4]);
 
   /* Deallocate memory. */
   free(rating);
