@@ -49,7 +49,7 @@ cmp(void const *ap, void const *bp)
 int
 main(int argc, char * argv[])
 {
-  size_t n, m;
+  size_t n, m, k;
 
   /* Validate command line arguments. */
   assert(2 == argc);
@@ -112,11 +112,20 @@ main(int argc, char * argv[])
   /* Sort distances. */
   qsort(distance, n, sizeof(*distance), cmp);
 
-  /* Output minimum distance viewer and a prediction for movie 5. */
-  printf("The most similar viewer was viewer #%zu and the distance calculated "
-    "was %.1lf.\n", distance[0].viewer_id + 1, distance[0].distance);
-  printf("The predicated rating for movie 5 is %.1lf.\n",
-    rating[distance[0].viewer_id * m + 4]);
+  /* Get user input. */
+  printf("Enter the number of similar viewers to report: ");
+  scanf("%zu", &k);
+
+  /* Output k viewers who are least different from the user. */
+  printf("Viewer ID   Movie five   Distance\n");
+  printf("---------------------------------\n");
+
+  for (size_t i = 0; i < k; i++) {
+    printf("%9zu   %10.1lf   %8.1lf\n", distance[i].viewer_id + 1,
+      rating[distance[i].viewer_id * m + 4], distance[i].distance);
+  }
+
+  printf("---------------------------------\n");
 
   /* Deallocate memory. */
   free(rating);
