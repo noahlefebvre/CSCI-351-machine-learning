@@ -51,22 +51,15 @@ main(int argc, char * argv[])
   fscanf(fp, "%zu %zu", &n, &m);
 
   /* Allocate memory. */
-  double * const movie1 = malloc(n * sizeof(*movie1));
-  double * const movie2 = malloc(n * sizeof(*movie2));
-  double * const movie3 = malloc(n * sizeof(*movie3));
-  double * const movie4 = malloc(n * sizeof(*movie4));
-  double * const movie5 = malloc(n * sizeof(*movie5));
+  double * const rating = malloc(n * m * sizeof(*rating));
 
   /* Check for success. */
-  assert(movie1);
-  assert(movie2);
-  assert(movie3);
-  assert(movie4);
-  assert(movie5);
+  assert(rating);
 
   for (size_t i = 0; i < n; i++) {
-    fscanf(fp, "%lf %lf %lf %lf %lf", &movie1[i], &movie2[i], &movie3[i],
-      &movie4[i], &movie5[i]);
+    for (size_t j = 0; j < m; j++) {
+      fscanf(fp, "%lf", &rating[i * m + j]);
+    }
   }
 
   /* Close file. */
@@ -77,16 +70,14 @@ main(int argc, char * argv[])
   printf("%zu %zu\n", n, m);
 
   for (size_t i = 0; i < n; i++) {
-    printf("%.1lf %.1lf %.1lf %.1lf %.1lf\n", movie1[i], movie2[i], movie3[i],
-      movie4[i], movie5[i]);
+    for (size_t j = 0; j < m - 1; j++) {
+      printf("%.1lf ", rating[i * m + j]);
+    }
+    printf("%.1lf\n", rating[i * m + m - 1]);
   }
 
   /* Deallocate memory. */
-  free(movie1);
-  free(movie2);
-  free(movie3);
-  free(movie4);
-  free(movie5);
+  free(rating);
 
   return EXIT_SUCCESS;
 }
