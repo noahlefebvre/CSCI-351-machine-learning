@@ -94,15 +94,20 @@ main(int argc, char * argv[])
     }
   }
 
-  /* Output distances in table. */
-  printf("Viewer ID   Distance\n");
-  printf("--------------------\n");
-
-  for (size_t i = 0; i < n; i++) {
-    printf("%9zu   %8.1lf\n", i + 1, distance[i]);
+  /* Find minimum distance. */
+  double mind = distance[0];
+  size_t mini = 0;
+  for (size_t i = 1; i < n; i++) {
+    if (distance[i] < mind) {
+      mind = distance[i];
+      mini = i;
+    }
   }
 
-  printf("--------------------\n");
+  /* Output minimum distance viewer and a prediction for movie 5. */
+  printf("The most similar viewer was viewer #%zu and the distance calculated "
+    "was %.1lf.\n", mini + 1, mind);
+  printf("The predicated rating for movie 5 is %.1lf.\n", rating[mini * m + 4]);
 
   /* Deallocate memory. */
   free(rating);
