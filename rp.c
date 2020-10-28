@@ -32,6 +32,15 @@ THE SOFTWARE.
 /* EXIT_SUCCESS, malloc, calloc, free */
 #include <stdlib.h>
 
+static int
+cmp(void const *ap, void const *bp)
+{
+  double const a = *(double*)ap;
+  double const b = *(double*)bp;
+
+  return a < b ? -1 : 1;
+}
+
 int
 main(int argc, char * argv[])
 {
@@ -94,20 +103,13 @@ main(int argc, char * argv[])
     }
   }
 
-  /* Find minimum distance. */
-  double mind = distance[0];
-  size_t mini = 0;
-  for (size_t i = 1; i < n; i++) {
-    if (distance[i] < mind) {
-      mind = distance[i];
-      mini = i;
-    }
-  }
+  /* Sort distances. */
+  qsort(distance, n, sizeof(*distance), cmp);
 
-  /* Output minimum distance viewer and a prediction for movie 5. */
-  printf("The most similar viewer was viewer #%zu and the distance calculated "
-    "was %.1lf.\n", mini + 1, mind);
-  printf("The predicated rating for movie 5 is %.1lf.\n", rating[mini * m + 4]);
+  /* Output sorted distances. */
+  for (size_t i = 0; i < n; i++) {
+    printf("%.1lf\n", distance[i]);
+  }
 
   /* Deallocate memory. */
   free(rating);
