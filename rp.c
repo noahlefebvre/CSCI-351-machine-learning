@@ -127,6 +127,15 @@ main(int argc, char * argv[])
 
   printf("---------------------------------\n");
 
+  /* Compute the average to make the prediction. */
+  double sum = 0.0;
+  for (size_t i = 0; i < k; i++) {
+    sum += rating[distance[i].viewer_id * m + 4];
+  }
+
+  /* Output prediction. */
+  printf("The predicted rating for movie five is %.1lf.\n", sum / k);
+
   /* Deallocate memory. */
   free(rating);
   free(urating);
