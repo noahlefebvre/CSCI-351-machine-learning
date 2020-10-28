@@ -33,7 +33,7 @@ int
 main(int argc, char * argv[])
 {
   size_t n, m;
-  double v;
+  double movie1, movie2, movie3, movie4, movie5;
 
   /* Validate command line arguments. */
   assert(2 == argc);
@@ -53,11 +53,10 @@ main(int argc, char * argv[])
   printf("%zu %zu\n", n, m);
 
   for (size_t i = 0; i < n; i++) {
-    for (size_t j = 0; j < m; j++) {
-      fscanf(fp, "%lf", &v);
-      printf("%.1lf ", v);
-    }
-    printf("\n");
+    fscanf(fp, "%lf %lf %lf %lf %lf", &movie1, &movie2, &movie3, &movie4,
+      &movie5);
+    printf("%.1lf %.1lf %.1lf %.1lf %.1lf\n", movie1, movie2, movie3, movie4,
+      movie5);
   }
 
   /* Close file. */
