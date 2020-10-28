@@ -23,10 +23,13 @@ THE SOFTWARE.
 /* assert */
 #include <assert.h>
 
-/* printf, fopen, fclose, fscanf */
+/* fabs */
+#include <math.h>
+
+/* printf, fopen, fclose, fscanf, scanf */
 #include <stdio.h>
 
-/* EXIT_SUCCESS, malloc, free */
+/* EXIT_SUCCESS, malloc, calloc, free */
 #include <stdlib.h>
 
 int
@@ -66,18 +69,45 @@ main(int argc, char * argv[])
   int const ret = fclose(fp);
   assert(!ret);
 
-  /* Echo contents of file. */
-  printf("%zu %zu\n", n, m);
+  /* Allocate more memory. */
+  double * const urating = malloc(m * sizeof(*urating));
 
+  /* Check for success. */
+  assert(urating);
+
+  /* Get user input. */
+  for (size_t j = 0; j < m - 1; j++) {
+    printf("Enter your rating for movie %zu: ", j + 1);
+    scanf("%lf", &urating[j]);
+  }
+
+  /* Allocate more memory. */
+  double * const distance = calloc(n, sizeof(*distance));
+
+  /* Check for success. */
+  assert(distance);
+
+  /* Compute distances. */
   for (size_t i = 0; i < n; i++) {
     for (size_t j = 0; j < m - 1; j++) {
-      printf("%.1lf ", rating[i * m + j]);
+      distance[i] += fabs(urating[j] - rating[i * m + j]);
     }
-    printf("%.1lf\n", rating[i * m + m - 1]);
   }
+
+  /* Output distances in table. */
+  printf("Viewer ID   Distance\n");
+  printf("--------------------\n");
+
+  for (size_t i = 0; i < n; i++) {
+    printf("%9zu   %8.1lf\n", i + 1, distance[i]);
+  }
+
+  printf("--------------------\n");
 
   /* Deallocate memory. */
   free(rating);
+  free(urating);
+  free(distance);
 
   return EXIT_SUCCESS;
 }
