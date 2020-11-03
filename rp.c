@@ -1,35 +1,9 @@
-/*
-Copyright (c) 2016-2020 Jeremy Iverson
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
-*/
-
 /* assert */
 #include <assert.h>
-
-/* 
- * fabs */
+/* fabs */
 #include <math.h>
-
 /* printf, fopen, fclose, fscanf, scanf */
 #include <stdio.h>
-
 /* EXIT_SUCCESS, malloc, calloc, free, qsort */
 #include <stdlib.h>
 
@@ -89,50 +63,76 @@ main(int argc, char * argv[])
 */
 
 //Auto import user values
-  urating[0] = 4.0;
-  urating[1] = 4.0;
-  urating[2] = 4.0;
-  urating[3] = 4.0;
+  urating[0] = 5.0;
+  urating[1] = 5.0;
+  urating[2] = 5.0;
+  urating[3] = 5.0;
 
   /* Allocate more memory. */
+  double count[10] = { 0.0 };
   double prob[10] = { 0.0 };
+  double uprob[40] = { 0.0 }; 
 
   /* Compute probabilities */
   for (int k = 0; k < 10; k++) {
     for (size_t i = 0; i < n; i++) {
-      prob[k] += (rating[i * m + 4] == (k + 1) / 2.0);
+      count[k] += (rating[i * m + 4] == (k + 1) / 2.0);
     }
   }
 
-  double uprob[40] = { 0.0};
-
-  for (size_t i = 0; i < n; k++) {
-    for (size_t x = 0; x < m-1; i++) {
-      for (int k = 0; k < 10; k++){
-      
-//if user[i] = urate[i] AND user [i] = 5.0 ++
-        if(urating[x] == rating[i * m + x] && rating [i * m + 4] == (k + 1)/2.0){
-	  uprob[(x * 10) + k] += 1
-      }
-      }
-    }
-  }
-
-  /* Finalize computation of probabilities; turns integers into percent 
   for (int k = 0; k < 10; k++) {
-    prob[k] /= n;
+    prob[k] = count[k]/n;
   }
 
   for (int k = 0; k < 10; k++) {
     printf("prob[%d] = %lf\n", k, prob[k]);
   }
-*/
-//
+  
+  
+  for (int i = 0; i < n; i++) {
+    for (size_t k = 0; k < 10; k++){
+      for (int x = 0; x < (m-1); x++) {
+      //if rating[i] = urate[i] AND user [i] = 5.0 ++
+        if(urating[x] == rating[i * m + x] && rating [i * m + 4] == (k + 1)/2.0){
+	  uprob[(k * 4) + x] += 1;
+      }
+      }
+    }
+  }
 
+  for (int i = 0; i < 40; i++){
+    printf("uprob[%d] = %lf\n", i, uprob[i]);
+  }
 
+  for (int i=0; i<10; i++){
+    printf("count[%d] = %lf\n", i, count[i]);
+  } 
+
+  double prediction[10] = {0.0};
+  for(size_t k = 0; k<10; k++){
+   if(prob[k] != 0){
+    prediction[k] = prob[k] * (uprob[4*k] / count[k]) * (uprob[4*k+1] / count[k]) * 		(uprob[4*k+2] / count[k]) * (uprob[4*k+3] / count[k]);
+    }
+    
+   
+  } 
+
+  for (int i = 0; i < 10; i++){
+    printf("prediction[%d] = %lf\n", i, prediction[i]);
+  }
+  
+  int i;
+  double max = prediction[0];
+  for (int k = 1; k < 10; k++){
+    if (prediction[k] > max){
+      i = k; 
+      max = prediction[k];
+    }
+  }
+	
 
   /* Output prediction. */
-  printf("The predicted rating for movie five is %.1lf.\n", (maxI + 1)/2.0);
+  printf("The predicted rating for movie five is %.1lf.\n", (i + 1)/2.0);
 
   /* Deallocate memory. */
   free(rating);
