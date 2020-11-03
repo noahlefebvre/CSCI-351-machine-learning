@@ -23,7 +23,8 @@ THE SOFTWARE.
 /* assert */
 #include <assert.h>
 
-/* fabs */
+/* 
+ * fabs */
 #include <math.h>
 
 /* printf, fopen, fclose, fscanf, scanf */
@@ -80,11 +81,18 @@ main(int argc, char * argv[])
   /* Check for success. */
   assert(urating);
 
-  /* Get user input. */
+  /* Get user input. 
   for (size_t j = 0; j < m - 1; j++) {
     printf("Enter your rating for movie %zu: ", j + 1);
     scanf("%lf", &urating[j]);
   }
+*/
+
+//Auto import user values
+  urating[0] = 4.0;
+  urating[1] = 4.0;
+  urating[2] = 4.0;
+  urating[3] = 4.0;
 
   /* Allocate more memory. */
   double prob[10] = { 0.0 };
@@ -96,7 +104,21 @@ main(int argc, char * argv[])
     }
   }
 
-  /* Finalize computation of probabilities. */
+  double uprob[40] = { 0.0};
+
+  for (size_t i = 0; i < n; k++) {
+    for (size_t x = 0; x < m-1; i++) {
+      for (int k = 0; k < 10; k++){
+      
+//if user[i] = urate[i] AND user [i] = 5.0 ++
+        if(urating[x] == rating[i * m + x] && rating [i * m + 4] == (k + 1)/2.0){
+	  uprob[(x * 10) + k] += 1
+      }
+      }
+    }
+  }
+
+  /* Finalize computation of probabilities; turns integers into percent 
   for (int k = 0; k < 10; k++) {
     prob[k] /= n;
   }
@@ -104,13 +126,16 @@ main(int argc, char * argv[])
   for (int k = 0; k < 10; k++) {
     printf("prob[%d] = %lf\n", k, prob[k]);
   }
+*/
+//
+
+
 
   /* Output prediction. */
-  //printf("The predicted rating for movie five is %.1lf.\n", ???);
+  printf("The predicted rating for movie five is %.1lf.\n", (maxI + 1)/2.0);
 
   /* Deallocate memory. */
   free(rating);
   free(urating);
-
   return EXIT_SUCCESS;
 }
