@@ -55,40 +55,44 @@ main(int argc, char * argv[])
   /* Check for success. */
   assert(urating);
 
-  /* Get user input. 
+  /* Get user input for ranking movies 1-4*/ 
   for (size_t j = 0; j < m - 1; j++) {
     printf("Enter your rating for movie %zu: ", j + 1);
     scanf("%lf", &urating[j]);
   }
-*/
 
-//Auto import user values
+
+/*Auto import user values
   urating[0] = 5.0;
   urating[1] = 5.0;
   urating[2] = 5.0;
-  urating[3] = 5.0;
+  urating[3] = 5.0;*/
 
-  /* Allocate more memory. */
+  /* Allocate memory for the three probability arrays. */
   double count[10] = { 0.0 };
   double prob[10] = { 0.0 };
   double uprob[40] = { 0.0 }; 
 
-  /* Compute probabilities */
+  /* Compute count for each movie rating(1-5) moviei = k+1/ 2.0 
+     c(movie5 = 0.5), c(movie5 = 1.0, c(movie5 = 1.5) ... */
   for (int k = 0; k < 10; k++) {
     for (size_t i = 0; i < n; i++) {
-      count[k] += (rating[i * m + 4] == (k + 1) / 2.0);
+      count[k] += (rating[i * m + (m-1)] == (k + 1) / 2.0);
     }
   }
 
+  /*Compute probability for each movie rating (1.0-5.0)
+     c(movie5 = 0.5)/ total viewers in database*/
   for (int k = 0; k < 10; k++) {
     prob[k] = count[k]/n;
   }
-
+/*
   for (int k = 0; k < 10; k++) {
     printf("prob[%d] = %lf\n", k, prob[k]);
-  }
+  }*/
   
-  
+  /*Find conditional prob for each movie and each of the ratings; uprob = count of people that rate movie 5 (1-5) and also rate movie 1,2..5 the same as user input 1,2..5
+*/  
   for (int i = 0; i < n; i++) {
     for (size_t k = 0; k < 10; k++){
       for (int x = 0; x < (m-1); x++) {
@@ -98,29 +102,19 @@ main(int argc, char * argv[])
       }
       }
     }
-  }
-
-  for (int i = 0; i < 40; i++){
-    printf("uprob[%d] = %lf\n", i, uprob[i]);
-  }
-
-  for (int i=0; i<10; i++){
-    printf("count[%d] = %lf\n", i, count[i]);
   } 
 
+  /* probabilty that user will rate movie 5 (0.5-5.0)*/
   double prediction[10] = {0.0};
   for(size_t k = 0; k<10; k++){
-   if(prob[k] != 0){
+    if(prob[k] != 0){
     prediction[k] = prob[k] * (uprob[4*k] / count[k]) * (uprob[4*k+1] / count[k]) * 		(uprob[4*k+2] / count[k]) * (uprob[4*k+3] / count[k]);
     }
     
    
   } 
 
-  for (int i = 0; i < 10; i++){
-    printf("prediction[%d] = %lf\n", i, prediction[i]);
-  }
-  
+  /*finds max prediction to show which rating is most likely to be given to 	movie 5 by user*/
   int i;
   double max = prediction[0];
   for (int k = 1; k < 10; k++){
@@ -131,7 +125,7 @@ main(int argc, char * argv[])
   }
 	
 
-  /* Output prediction. */
+  /* Prints the predicted value of user 5's rating for movie 5 */
   printf("The predicted rating for movie five is %.1lf.\n", (i + 1)/2.0);
 
   /* Deallocate memory. */
